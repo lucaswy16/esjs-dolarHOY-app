@@ -1,22 +1,65 @@
-importar { Terminal } desde '@es-js/terminal'
+importar { Terminal } desde "@es-js/terminal"
+importar { obtenerJson } desde "https://desarrollo-aplicaciones.vercel.app/2024/code/obtener-json.js"
+importar { validarSecreto } desde "https://desarrollo-aplicaciones.vercel.app/2024/code/validar-secreto.js"
+
 
 asincrono funcion inicio() {
-	Terminal.limpiar()
+  Terminal.escribir("Hola! Ingresa la palabra secreta:")
 
-	Terminal.escribir('Ingresa un valor:')
+  var secreto = esperar Terminal.leer()
 
-	const resultado = esperar Terminal.leer()
+  var dni = "37660676" 
 
-	Terminal.escribir({
-		Resultado: resultado,
-		Tipo: tipoDe resultado,
-	})
+  si (esperar validarSecreto(dni, secreto)) {
+    esperar mostrarCotizacion()
+  } sino {
+    Terminal.escribir("Palabra secreta inválida")
+  }
 
-	Terminal.escribir('Presiona ENTER para volver a iniciar')
+  Terminal.escribir("Presiona ENTER para volver a ingresar")
 
-	esperar Terminal.leerEnter()
+  esperar Terminal.leerEnter()
 
-	esperar inicio()
+  Terminal.limpiar()
+
+  inicio()
+}
+
+asincrono funcion mostrarCotizacion() {
+  
+  const dolarBlue = esperar obtenerJson('https://dolarapi.com/v1/dolares/blue')
+
+  const promedio = (dolarBlue.compra + dolarBlue.venta)/2
+  let opcion
+
+do{
+  Terminal.escribir("Elija la opcion que desea saber:", "1- Precio venta" , "2-Precio compra", "3-precio promedio","4-Fecha cotizcion", "5-Toda la informacion" , "6-Salir.")
+   opcion = await Terminal.leer();
+
+
+switch(opcion){
+
+  case 1:Terminal.escribir("El precio de venta actual es: " +  dolarBlue.venta);
+  break;
+  case 2: Terminal.escribir("El precio de compra actual es: " +  dolarBlue.compra);
+  break;
+  case 3: Terminal.escribir("El precio de promedio es: " +  promedio);
+  break;
+  case 4: Terminal.escribir("Fecha: " +  dolarBlue.fechaActualizacion);
+  break;
+  case 5:Terminal.escribir("El precio de venta actual es: " +  dolarBlue.venta)
+Terminal.escribir("El precio de compra actual es: " +  dolarBlue.compra)
+Terminal.escribir("El precio de promedio es: " +  promedio)
+Terminal.escribir("Fecha: " +  dolarBlue.fechaActualizacion);
+break;
+case 6: Terminal.escribir("adios")
+break;
+default: Terminal.escribir("opcion no valida");
+break;
+
+}
+
+} while(opcion!="6");
 }
 
 inicio()
